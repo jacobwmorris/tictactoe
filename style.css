@@ -34,6 +34,18 @@ main {
     align-items: center;
 }
 
+button {
+    border: 0;
+}
+
+div[data-current-player="x"] button:not(.x-inside, .o-inside):hover {
+    background-color: #f88;
+}
+
+div[data-current-player="o"] button:not(.x-inside, .o-inside):hover {
+    background-color: #88f;
+}
+
 .board-square > img {
     width: 75%;
     height: 75%;
