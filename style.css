@@ -17,6 +17,7 @@ main {
     margin: 0 auto;
 }
 
+/* Game Board */
 .game-board {
     background-color: #444;
     width: 600px;
@@ -54,4 +55,49 @@ div[data-current-player="o"] button:not(.x-inside, .o-inside):hover {
 
 .x-inside > .x, .o-inside > .o {
     display: block;
+}
+
+/* Player name form & status box */
+.status-box {
+    margin: 20px;
+    padding: 20px;
+    background-color: #eee;
+}
+
+.status-box > p {
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    margin: 10px 0px;
+}
+
+input {
+    height: 2em;
+    padding: 0px 2px;
+}
+
+.redtext {
+    color: red;
+}
+
+.bluetext {
+    color: blue;
+}
+
+.form-button {
+    height: 2em;
+    border: 1px solid black;
+    padding: 0px 10px;
+    border-radius: 0.5em;
+}
+
+.form-button:hover {
+    outline: 2px solid black;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
 }

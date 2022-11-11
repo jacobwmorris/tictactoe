@@ -4,24 +4,52 @@ const Player = function(name, char) {
 
 const GameBoard = (function() {
     const boardValues = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
+    const statusMessage = document.querySelector(".status-box > p");
     let playerX = {};
     let playerO = {};
     let currentPlayer = null;
-    let gameFinished = false;
+    let gameFinished = true;
 
-    const newGame = () => {
-        playerX = Player("test1", "x");
-        playerO = Player("test2", "o");
+    const reset = (event) => {
+        while(statusMessage.children.length > 0) {
+            console.log(statusMessage.children);
+            console.log(statusMessage.firstChild);
+            statusMessage.removeChild(statusMessage.firstChild);
+        }
+        statusMessage.textContent = "Enter the players names to start.";
+        statusMessage.setAttribute("class", "");
+        
+        playerX = {};
+        playerO = {};
+        currentPlayer = null;
+        gameFinished = true;
+        
+        document.querySelector("form").classList.remove("hidden");
+    }
+
+    const newGame = (event) => {
+        const p1name = document.querySelector("#player1-name").value;
+        const p2name = document.querySelector("#player2-name").value;
+        playerX = Player(p1name, "x");
+        playerO = Player(p2name, "o");
         currentPlayer = playerX;
 
         setBoardPlayer(currentPlayer);
+        statusMessage.textContent = `It is now ${currentPlayer.name}'s turn.`;
+        gameFinished = false;
+        for (let n = 0; n < 9; n++)
+            boardValues[n] = "-";
+        
+        display();
+
+        document.querySelector("form").classList.add("hidden");
+        event.preventDefault();
     };
 
     const setBoardPlayer = (player) => {
         const board = document.querySelector(".game-board");
 
         if (!player) {
-            console.log("made it");
             board.setAttribute("data-current-player", "");
             return;
         }
@@ -37,6 +65,7 @@ const GameBoard = (function() {
         }
 
         setBoardPlayer(currentPlayer);
+        statusMessage.textContent = `It is now ${currentPlayer.name}'s turn.`;
     }
 
     const boardAt = (x, y) => {
@@ -92,6 +121,51 @@ const GameBoard = (function() {
         return false;
     }
 
+    const boardFilled = () => {
+        return !boardValues.some(val => val === "-");
+    }
+
+    const setTieMessage = () => {
+        statusMessage.textContent = "";
+        const m1 = document.createElement("span");
+        const m2 = document.createElement("span");
+        const m3 = document.createElement("span");
+        m1.textContent = "It's a tie! You're both ";
+        m2.textContent = "winners";
+        m2.setAttribute("style", "text-decoration: line-through;");
+        m3.textContent = " losers!";
+        statusMessage.appendChild(m1);
+        statusMessage.appendChild(m2);
+        statusMessage.appendChild(m3);
+    }
+
+    const setWinMessage = () => {
+        statusMessage.textContent = `The winner is ${currentPlayer.name}! Congratulations!`;
+        if (currentPlayer === playerX) {
+            statusMessage.classList.add("redtext");
+        }
+        else {
+            statusMessage.classList.add("bluetext");
+        }
+    }
+
+    const turn = () => {
+        if (checkWinner(currentPlayer)) {
+            setWinMessage();
+            setBoardPlayer();
+            gameFinished = true;
+        }
+        else if (boardFilled()) {
+            setTieMessage();
+            setBoardPlayer();
+            gameFinished = true;
+        }
+        else {
+            switchPlayers();
+        }
+        display();
+    }
+
     const getSquareClickFunc = (num) => {
         return function(event) {
             if (gameFinished)
@@ -101,16 +175,7 @@ const GameBoard = (function() {
 
             boardValues[num] = currentPlayer.char;
 
-            //check for winners
-            if (checkWinner(currentPlayer)) {
-                console.log("The winner is: " + currentPlayer.name);
-                setBoardPlayer();
-                gameFinished = true;
-            }
-            else {
-                switchPlayers();
-            }
-            display();
+            turn();
         };
     };
 
@@ -123,7 +188,8 @@ const GameBoard = (function() {
             n++;
         }
 
-        newGame();
+        document.querySelector("#start-button").addEventListener("click", newGame);
+        document.querySelector("#reset-button").addEventListener("click", reset);
     };
 
     const setSquareClass = (square, value) => {
@@ -151,7 +217,7 @@ const GameBoard = (function() {
         }
     };
 
-    return {startup, display};
+    return {startup};
 })();
 
 GameBoard.startup();
