@@ -2,6 +2,29 @@ const Player = function(name, char) {
     return {name, char};
 };
 
+const CpuPlayer = function(char) {
+    const proto = Player("Computer", char);
+    const isCpu = true;
+
+    const getFreeSquares = function(board) {
+        const free = [];
+        for (let n = 0; n < 9; n++) {
+            if (board[n] === "-") {
+                free.push(n);
+            }
+        }
+        return free;
+    }
+
+    const getMove = (board) => {
+        const free = getFreeSquares(board);
+        squareId = Math.floor(Math.random() * free.length);
+        return free[squareId];
+    }
+
+    return Object.assign({}, proto, {isCpu, getMove});
+}
+
 const GameBoard = (function() {
     const boardValues = ["-", "-", "-", "-", "-", "-", "-", "-", "-"];
     const statusMessage = document.querySelector(".status-box > p");
@@ -12,12 +35,11 @@ const GameBoard = (function() {
 
     const reset = (event) => {
         while(statusMessage.children.length > 0) {
-            console.log(statusMessage.children);
-            console.log(statusMessage.firstChild);
             statusMessage.removeChild(statusMessage.firstChild);
         }
         statusMessage.textContent = "Enter the players names to start.";
         statusMessage.setAttribute("class", "");
+        setBoardPlayer();
         
         playerX = {};
         playerO = {};
@@ -30,8 +52,11 @@ const GameBoard = (function() {
     const newGame = (event) => {
         const p1name = document.querySelector("#player1-name").value;
         const p2name = document.querySelector("#player2-name").value;
-        playerX = Player(p1name, "x");
-        playerO = Player(p2name, "o");
+        const p1cpu = document.querySelector("#player1-cpu").checked;
+        const p2cpu = document.querySelector("#player2-cpu").checked;
+
+        playerX = p1cpu ? CpuPlayer("x") : Player(p1name, "x");
+        playerO = p2cpu ? CpuPlayer("o") : Player(p2name, "o");
         currentPlayer = playerX;
 
         setBoardPlayer(currentPlayer);
@@ -43,6 +68,10 @@ const GameBoard = (function() {
         display();
 
         document.querySelector("form").classList.add("hidden");
+
+        if (currentPlayer.isCpu) {
+            cpuTurn();
+        }
         event.preventDefault();
     };
 
@@ -150,6 +179,7 @@ const GameBoard = (function() {
     }
 
     const turn = () => {
+        //console.log(currentPlayer);
         if (checkWinner(currentPlayer)) {
             setWinMessage();
             setBoardPlayer();
@@ -163,19 +193,29 @@ const GameBoard = (function() {
         else {
             switchPlayers();
         }
+
         display();
     }
 
-    const getSquareClickFunc = (num) => {
+    const cpuTurn = () => {
+        //How do I get around having to click a square to start a turn?
+        while (currentPlayer.isCpu && !gameFinished) {
+            const target = currentPlayer.getMove(boardValues)
+            boardValues[target] = currentPlayer.char;
+            turn();
+        }
+    }
+
+    const getSquareClickFunc = (squareNum) => {
         return function(event) {
             if (gameFinished)
                 return;
             if (this.classList.contains("x-inside") || this.classList.contains("o-inside"))
                 return;
 
-            boardValues[num] = currentPlayer.char;
-
+            boardValues[squareNum] = currentPlayer.char;
             turn();
+            cpuTurn();
         };
     };
 

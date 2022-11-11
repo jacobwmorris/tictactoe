@@ -25,12 +25,22 @@
         
         <form action="#" method="post">
             <h2>Enter player names</h2>
-            <label for="player1-name">Player 1: <span class="redtext">(X)</span>
-                <input type="text" name="p1name" id="player1-name">
-            </label>
-            <label for="player2-name">Player 2: <span class="bluetext">(O)</span>
-                <input type="text" name="p2name" id="player2-name">
-            </label>
+            <div class="player-info">
+                <label for="player1-name">Player 1: <span class="redtext">(X)</span>
+                    <input type="text" name="p1name" id="player1-name">
+                </label>
+                <label for="player1-cpu" class="check-label">
+                    <input type="checkbox" name="p1cpu" id="player1-cpu">Computer controlled
+                </label>
+            </div>
+            <div class="player-info">
+                <label for="player2-name">Player 2: <span class="bluetext">(O)</span>
+                    <input type="text" name="p2name" id="player2-name">
+                </label>
+                <label for="player2-cpu" class="check-label">
+                    <input type="checkbox" name="p2cpu" id="player2-cpu">Computer controlled
+                </label>
+            </div>
             <button type="submit" class="form-button" id="start-button">Start game</button>
         </form>
 

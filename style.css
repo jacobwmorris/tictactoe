@@ -20,8 +20,8 @@ main {
 /* Game Board */
 .game-board {
     background-color: #444;
-    width: 600px;
-    height: 600px;
+    width: 500px;
+    height: 500px;
     margin: 20px auto;
     display: grid;
     grid-template: repeat(3, 1fr) / repeat(3, 1fr);
@@ -68,14 +68,30 @@ div[data-current-player="o"] button:not(.x-inside, .o-inside):hover {
     margin-bottom: 10px;
 }
 
+.player-info {
+    margin: 10px 20px;
+    border: 1px solid #eee;
+    padding: 10px 0px;
+}
+
 label {
     display: block;
-    margin: 10px 0px;
+    margin: 0px 0px;
+}
+
+.check-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 input {
     height: 2em;
     padding: 0px 2px;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
 }
 
 .redtext {
